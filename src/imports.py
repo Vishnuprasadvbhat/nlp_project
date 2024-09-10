@@ -4,7 +4,8 @@ import pandas as pd
 import nltk
 from nltk.corpus import stopwords
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import sys, os
+import sys
+import os
 
 nltk.download('stopwords')
 nltk.download('punkt')

@@ -11,31 +11,36 @@ Original file is located at
         also we split the text into positive and negative and label the dataset
         This file returns a dataframe with data resulting in sentiment analysis
 """
-from string import punctuation
-from nltk.tokenize import word_tokenize, sent_tokenize
-import pandas as pd
-import nltk
-from nltk.corpus import stopwords
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from src.imports import stop_words
-# from src.imports import *
+from src.imports import *
 from src.utils import save_dataframe
 
 
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('vader_lexicon')
-stop_words = stopwords.words('english')
+class Sentiment_Analysis:
 
+    def __init__(self):
+        # save_file = savefile()
+        pass
 
-
-class Sentiment_analysis:
     def data_preprocess(self):
         try:
 
             punc = '''!()-[]{};:,'"\<>/?@#$%^&*_~'''
 
-            texts = "It gives you insight into what your day might be and you can avoid traps of the mind games  people play and avoid them.This is a GREAT app. The horoscopes I read were amazingly appropriate for my friend and myself. I would recommend this app to all of my friends.to the person who says there is no capricorn.wtf there is Capricorn! I would rate 5 stars. it has my constalation Leo.I read my Horoscope for fun.  This app. has been so dead on as to what is going on in my life.  So close sometimes that it gives me the Willies. Try it, its free! .Weird it seems to know what\'s happening. Coincide or not? Check it out and see. Or maybe I\'m just nuts lol ;)I like this app a lot...it does what it says and in no time I have my horoscope up on my screen...I love and I use it all the timeI love this app! very accurate and reliable! would recommend to any one that likes reading their horoscopes regularly! Try it!I have this app. on my Kindle Fire 1st gen. and it works perfectly. The horoscopes are well written, informative and rather accurate. Some horoscope app.s are cheesy, but not this one. I highly recommend!This is a great app that is both attractive and efficient. It provides a well-rounded and thorough horoscope based on a three decanate system. Highly recommended.This is a great app. that makes you think about things before you do them.  At least that is what I get out of it."
+            texts = "It gives you insight into what your day might be and you can avoid traps of the mind games  " \
+                    "people play and avoid them.This is a GREAT app. The horoscopes I read were amazingly appropriate " \
+                    "for my friend and myself. I would recommend this app to all of my friends.to the person who says " \
+                    "there is no capricorn.wtf there is Capricorn! I would rate 5 stars. it has my constalation Leo.I " \
+                    "read my Horoscope for fun.  This app. has been so dead on as to what is going on in my life.  So " \
+                    "close sometimes that it gives me the Willies. Try it, its free! .Weird it seems to know what\\'s " \
+                    "happening. Coincide or not? Check it out and see. Or maybe I\\'m just nuts lol ;)I like this app " \
+                    "a lot...it does what it says and in no time I have my horoscope up on my screen...I love and I " \
+                    "use it all the timeI love this app! very accurate and reliable! would recommend to any one that " \
+                    "likes reading their horoscopes regularly! Try it!I have this app. on my Kindle Fire 1st gen. and " \
+                    "it works perfectly. The horoscopes are well written, informative and rather accurate. Some " \
+                    "horoscope app.s are cheesy, but not this one. I highly recommend!This is a great app that is " \
+                    "both attractive and efficient. It provides a well-rounded and thorough horoscope based on a " \
+                    "three decanate system. Highly recommended.This is a great app. that makes you think about things " \
+                    "before you do them.  At least that is what I get out of it."
 
             data = texts
 
@@ -86,34 +91,50 @@ class Sentiment_analysis:
 
             positive_sent = {}
             for sent in sent_token:
-                for key in positive_words.keys():
-                    if key in sent:
-                        positive_sent[sent] = round(sum(positive_words.values()) / len(positive_words), 2)
-                        break
+                for word in sent.split():
+                    if word.lower() in positive_words.keys():
+                        if sent not in positive_sent.keys():
+                            positive_sent[sent] = positive_words[word.lower()]
+                        else:
+                            positive_sent[sent] += positive_words[word.lower()]
 
             pos_data = pd.DataFrame(positive_sent.items(), columns=['sentence', 'score'])
 
             negative_sent = {}
-
             for sent in sent_token:
-                for key in negative_words.keys():
-                    if key in sent:
-                        negative_sent[sent] = round(sum(negative_words.values()) / len(negative_words), 2)
-                        break
+                for word in sent.split():
+                    if word.lower() in negative_words.keys():
+                        if sent not in negative_sent.keys():
+                            negative_sent[sent] = negative_words[word.lower()]
+                        else:
+                            negative_sent[sent] += negative_words[word.lower()]
 
             neg_data = pd.DataFrame(negative_sent.items(), columns=['sentence', 'score'])
 
-            neg_data['score'] = neg_data['score'] * -1
+            sent_score = {k: v for d in (positive_sent, negative_sent) for k, v in d.items()}
+            sent_score = dict(sorted(sent_score.items(), key=lambda x: x[1], reverse=True))
 
-            sentiment_data = pd.concat([pos_data, neg_data], ignore_index=True)
+            # sentiment_data = pd.concat([pos_data, neg_data], ignore_index=True)
+
+            sentiment_data = pd.DataFrame(list(sent_score.items()), columns=['sentence', 'score'])
 
             sentiment_data['label'] = sentiment_data['score'].apply(lambda x: 1 if x > 0.3 else 0)
-            sentiment_data.drop(columns=['score'], inplace=True)
+            # sentiment_data.drop(columns=['score'], inplace=True)
 
-            saved_file = save_dataframe(sentiment_data, folder_path= sentiment_data,filename='sentiment.csv')
+            folder_path = 'C:\\Users\\vishn\\summarizer\\sentiment_data'
 
+            save_dataframe(sentiment_data, folder_path=folder_path, filename='sentiment.csv')
+            save_dataframe(pos_data, folder_path=folder_path, filename='pos_sentiment.csv')
+            save_dataframe(neg_data, folder_path=folder_path, filename='neg_sentiment.csv')
 
-            return saved_file
+            return [sent_score, positive_sent, negative_sent]
 
         except Exception as e:
             print(e)
+
+
+if __name__ == '__main__':
+    object = Sentiment_Analysis()
+
+    main = object.data_preprocess()
+    # print(main)
