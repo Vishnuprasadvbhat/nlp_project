@@ -11,113 +11,109 @@ Original file is located at
         also we split the text into positive and negative and label the dataset
         This file returns a dataframe with data resulting in sentiment analysis
 """
-
-
 from string import punctuation
 from nltk.tokenize import word_tokenize, sent_tokenize
 import pandas as pd
 import nltk
 from nltk.corpus import stopwords
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from src.imports import stop_words
+# from src.imports import *
+from src.utils import save_dataframe
+
 
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('vader_lexicon')
 stop_words = stopwords.words('english')
 
-punc = '''!()-[]{};:,'"\<>/?@#$%^&*_~'''
-
-texts = "It gives you insight into what your day might be and you can avoid traps of the mind games  people play and avoid them.This is a GREAT app. The horoscopes I read were amazingly appropriate for my friend and myself. I would recommend this app to all of my friends.to the person who says there is no capricorn.wtf there is Capricorn! I would rate 5 stars. it has my constalation Leo.I read my Horoscope for fun.  This app. has been so dead on as to what is going on in my life.  So close sometimes that it gives me the Willies. Try it, its free! .Weird it seems to know what\'s happening. Coincide or not? Check it out and see. Or maybe I\'m just nuts lol ;)I like this app a lot...it does what it says and in no time I have my horoscope up on my screen...I love and I use it all the timeI love this app! very accurate and reliable! would recommend to any one that likes reading their horoscopes regularly! Try it!I have this app. on my Kindle Fire 1st gen. and it works perfectly. The horoscopes are well written, informative and rather accurate. Some horoscope app.s are cheesy, but not this one. I highly recommend!This is a great app that is both attractive and efficient. It provides a well-rounded and thorough horoscope based on a three decanate system. Highly recommended.This is a great app. that makes you think about things before you do them.  At least that is what I get out of it."
-
-data = texts
 
 
-texts = texts.lower()
+class Sentiment_analysis:
+    def data_preprocess(self):
+        try:
+
+            punc = '''!()-[]{};:,'"\<>/?@#$%^&*_~'''
+
+            texts = "It gives you insight into what your day might be and you can avoid traps of the mind games  people play and avoid them.This is a GREAT app. The horoscopes I read were amazingly appropriate for my friend and myself. I would recommend this app to all of my friends.to the person who says there is no capricorn.wtf there is Capricorn! I would rate 5 stars. it has my constalation Leo.I read my Horoscope for fun.  This app. has been so dead on as to what is going on in my life.  So close sometimes that it gives me the Willies. Try it, its free! .Weird it seems to know what\'s happening. Coincide or not? Check it out and see. Or maybe I\'m just nuts lol ;)I like this app a lot...it does what it says and in no time I have my horoscope up on my screen...I love and I use it all the timeI love this app! very accurate and reliable! would recommend to any one that likes reading their horoscopes regularly! Try it!I have this app. on my Kindle Fire 1st gen. and it works perfectly. The horoscopes are well written, informative and rather accurate. Some horoscope app.s are cheesy, but not this one. I highly recommend!This is a great app that is both attractive and efficient. It provides a well-rounded and thorough horoscope based on a three decanate system. Highly recommended.This is a great app. that makes you think about things before you do them.  At least that is what I get out of it."
+
+            data = texts
+
+            texts = texts.lower()
+
+            texts = [text for text in texts if text not in punc]
+            texts = ''.join(texts)
+
+            word_token = word_tokenize(texts)
+
+            word_token = [word for word in word_token if
+                          word not in stop_words and word not in punctuation and word != '...']
+
+            word_freq = {}
+            for word in word_token:
+                if word in word_freq:
+                    word_freq[word] += 1
+                else:
+                    word_freq[word] = 1
+
+            max_freq = max(word_freq.values())
+
+            prop_word = {}
+            for key, values in word_freq.items():
+                prop_word[key] = round(values / max_freq, 3)
+
+            vader = SentimentIntensityAnalyzer()
+
+            # sentiments = [vader.polarity_scores(word)['compound'] for word in word_token]
+
+            # positive_sentiments = [sentiment for sentiment in sentiments if sentiment >= 0.5]
+
+            positive_words = {}
+            for word in word_token:
+                senti = vader.polarity_scores(word)['compound']
+                if senti >= 0.3:
+                    positive_words[word] = senti
+
+            negative_words = {}
+            for word in word_token:
+                senti = vader.polarity_scores(word)['compound']
+                if senti < 0.3 and senti > -0.5 and not senti == 0:
+                    negative_words[word] = senti
+
+            sent_token = sent_tokenize(texts)
+
+            sent_token = [sent.lower() for sent in sent_token]
+
+            positive_sent = {}
+            for sent in sent_token:
+                for key in positive_words.keys():
+                    if key in sent:
+                        positive_sent[sent] = round(sum(positive_words.values()) / len(positive_words), 2)
+                        break
+
+            pos_data = pd.DataFrame(positive_sent.items(), columns=['sentence', 'score'])
+
+            negative_sent = {}
+
+            for sent in sent_token:
+                for key in negative_words.keys():
+                    if key in sent:
+                        negative_sent[sent] = round(sum(negative_words.values()) / len(negative_words), 2)
+                        break
+
+            neg_data = pd.DataFrame(negative_sent.items(), columns=['sentence', 'score'])
+
+            neg_data['score'] = neg_data['score'] * -1
+
+            sentiment_data = pd.concat([pos_data, neg_data], ignore_index=True)
+
+            sentiment_data['label'] = sentiment_data['score'].apply(lambda x: 1 if x > 0.3 else 0)
+            sentiment_data.drop(columns=['score'], inplace=True)
+
+            saved_file = save_dataframe(sentiment_data, folder_path= sentiment_data,filename='sentiment.csv')
 
 
-texts = [text for text in texts if text not in punc]
-texts = ''.join(texts)
+            return saved_file
 
-word_token = word_tokenize(texts)
-
-
-word_token = [word for word in word_token if word not in stop_words and word not in punctuation and word != '...']
-
-
-word_freq = {}
-for word in word_token:
-    if word in word_freq:
-        word_freq[word] += 1
-    else:
-        word_freq[word] = 1
-
-
-max_freq = max(word_freq.values())
-
-prop_word = {}
-for key,values in word_freq.items():
-    prop_word[key] = round(values/max_freq,3)
-
-
-
-vade = SentimentIntensityAnalyzer()
-
-
-sentiments = [vade.polarity_scores(word)['compound'] for word in word_token]
-
-
-positive_sentiments = [sentiment for sentiment in sentiments if sentiment >= 0.5]
-positive_sentiments
-
-positive_words = {}
-for word in word_token:
-    senti = vade.polarity_scores(word)['compound']
-    if senti >= 0.3:
-        positive_words[word] = senti
-
-positive_words
-
-negative_words = {}
-for word in word_token:
-    senti = vade.polarity_scores(word)['compound']
-    if senti < 0.3 and senti> -0.5 and not senti == 0:
-        negative_words[word] = senti
-
-negative_words
-
-sent_token = sent_tokenize(texts)
-
-sent_token = [sent.lower() for sent in sent_token]
-
-
-positive_sent = {}
-for sent in sent_token:
-  for key in positive_words.keys():
-    if key in sent:
-      positive_sent[sent] =round(sum(positive_words.values())/len(positive_words),2)
-      break
-
-
-pos_data = pd.DataFrame(positive_sent.items(),columns=['sentence','score'])
-
-
-negative_sent = {}
-
-for sent in sent_token:
-  for key in negative_words.keys():
-    if key in sent:
-      negative_sent[sent] =round(sum(negative_words.values())/len(negative_words),2)
-      break
-
-neg_data = pd.DataFrame(negative_sent.items(),columns=['sentence','score'])
-
-
-neg_data['score'] = neg_data['score'] * -1
-
-
-sentiment_data = pd.concat([pos_data,neg_data],ignore_index = True)
-
-
-sentiment_data['label'] = sentiment_data['score'].apply(lambda x: 1 if x > 0.3 else 0)
-sentiment_data.drop(columns=['score'],inplace=True)
-
+        except Exception as e:
+            print(e)
