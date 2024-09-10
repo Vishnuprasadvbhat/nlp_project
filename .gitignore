@@ -131,7 +131,8 @@ env.bak/
 venv.bak/
 /Appliances.jsonl
 .Appliances
-
+.idea
+.idea/
 # Spyder project settings
 .spyderproject
 .spyproject
