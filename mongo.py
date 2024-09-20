@@ -10,3 +10,5 @@ data = {"UserId" : 1, "Name": "Vishnuprasad", "Password": 1234, "Address" : "Man
 
 
 collections.insert_one(data)
+
+

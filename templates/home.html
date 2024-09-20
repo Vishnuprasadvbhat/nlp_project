@@ -1,0 +1,40 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Flask App</title>
+     -->
+{% block title %} {% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename = 'stylesheets/style.css') }} ">
+</head>
+{% block content %}
+    <!-- <div class="container">
+        <h1>Welcome to My Flask App!</h1>
+        <p>This is a simple Flask application with enhanced CSS styling. Explore and enjoy!</p>
+        <p>Learn more about <a href="https://flask.palletsprojects.com/">Flask</a>.</p>
+    </div> -->
+    
+    <div class="welcome">
+    <h1>Welcome to my NLP Project</h1>
+
+    </div>
+    <div class="description">
+        <h6>This project Involves implementation of Abstractive and Extractive method of Text Summarization and Natural Language Processing</h6>  
+    </div>
+    
+    <div class="product">
+        <h2> Product page</h2>
+        <div class="product1-body">
+            <div class="p1-image">
+            <img src="{{ url_for('static', filename= 'img/washing_machine.jpg') }}" alt="Washing Machine">
+        </div>  
+            <h5 class="p1-title">
+                LG 8 Kg, 5 Star, Direct Drive Technology, Steam Wash, 6 motion DD, Smart Diagnosis, Fully Automatic Front Load Washing Machine (FHM1408BDW, Allergy Care, In-Built Heater, Touch Panel, White)
+                <p></p>
+            </h5>
+        </div>
+    </div>
+
+</body>
+{% endblock %}
