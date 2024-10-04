@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/style1.css') }}">
+
+<div class="banner">
+  <div class="item1">Block 1</div>
+  <div class="item2">Block 2</div>
+  <form>
+  <label style="color: white; padding: 15px 15px 0px 15px; margin-top: 10px;" for="fname">Search</label></form>
+  <input type="text" id="fname" name="fname"><br>
+  
+</div>
+
+{% endblock %}
