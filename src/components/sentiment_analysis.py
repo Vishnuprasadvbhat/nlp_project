@@ -4,7 +4,7 @@
         This file returns a dataframe with data resulting in sentiment analysis
 """
 # from imports import *
-from imports import *
+from src.imports import *
 from utils import save_dataframe
 from reviews import texts
 class Sentiment_Analysis:
