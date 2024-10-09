@@ -1,15 +1,48 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block title %} NLP project {% endblock %}
+{% block head %}
 <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/style1.css') }}">
+{% endblock %}
 
-<div class="banner">
-  <div class="item1">Block 1</div>
-  <div class="item2">Block 2</div>
-  <form>
-  <label style="color: white; padding: 15px 15px 0px 15px; margin-top: 10px;" for="fname">Search</label></form>
-  <input type="text" id="fname" name="fname"><br>
-  
-</div>
 
+{% block content %}
+<body>
+   <div class="container">
+        <h1>Review Summarization</h1>
+        
+        <!-- Display reviews -->
+        <div class="reviews-section">
+            <h2>All Reviews</h2>
+            <div id="reviews-list"></div>
+        </div>
+        
+        <!-- Input for adding new review -->
+        <div class="add-review">
+            <h2>Add a Review</h2>
+            <textarea id="new-review" placeholder="Type your review here..."></textarea>
+            <button id="submit-review">Submit Review</button>
+        </div>
+        
+        <!-- Display boxes for positive and negative reviews -->
+        <div class="sentiment-section">
+            <div class="sentiment-box positive">
+                <h3>Positive Reviews</h3>
+                <div id="positive-reviews"></div>
+            </div>
+            <div class="sentiment-box negative">
+                <h3>Negative Reviews</h3>
+                <div id="negative-reviews"></div>
+            </div>
+        </div>
+
+        <!-- Summarize button -->
+        <div class="summarize-section">
+            <button id="summarize-btn" class="effect-button">Summarize</button>
+            <div id="summary-output"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
 {% endblock %}

@@ -1,43 +1,124 @@
+/* Reset some basic styles */
 body {
   margin: 0;
-  padding : 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Arial, sans-serif;
+  /* background: linear-gradient(110.2deg, rgb(54, 197, 240) 8.2%, rgb(74, 21, 75) 92.4%); */
+  background: linear-gradient(179.4deg, rgb(12, 20, 69) -16.9%, rgb(71, 30, 84) 119.9%);
+  
+  color: #333;
 
 }
 
-
-div.banner {
-  background-color: rgb(19, 19, 34);
-  width: 100% ;
-  height: 65px;
-  display: flex;
+/* Container styling */
+.container {
+  width: 80%;
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #060505;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-div.item1{
-  display: inline;
-  /* border-style: solid; */
-  /* border-color: white; */
-  margin : 0;
-  width: 15%;
-  text-align: center;
-  color: white;
-  padding-top : 15px ;
+/* Heading styles */
+h1, h2 {
+  color: #ffffff;
 }
 
-div.item2 {
-  display: inline;
-  margin : 0;
-  width: 15%;
-  text-align: center;
-  color: white;
-  padding-top : 15px ;
+h3 {
+  color: #000000;
 }
 
+/* Reviews section */
+.reviews-section {
+  margin-bottom: 1.5rem;
+}
 
-input[type=text] {
-  padding: 12px 20px;
-  width : 50% ;
-  margin: 8px 0;
+#reviews-list {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #ecf0f1;
+}
+
+/* Add review input */
+.add-review {
+  margin-bottom: 1.5rem;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
   box-sizing: border-box;
+  resize: none;
+}
+
+#submit-review {
+  background-color: #3498db;
   color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-top : 10px ;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1rem;
+}
+
+#submit-review:hover {
+  background-color: #2980b9;
+}
+
+/* Sentiment section */
+.sentiment-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.sentiment-box {
+  flex: 1;
+  margin-right: 10px; /* Space between the boxes */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  background-color: #ecf0f1;
+}
+
+.sentiment-box h3 {
+  margin-top: 0;
+}
+
+/* Summarize section */
+.summarize-section {
+  text-align: center;
+}
+
+#summarize-btn {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1rem;
+}
+
+#summarize-btn:hover {
+  background-color: #219653;
+}
+
+/* Summary output */
+#summary-output {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ecf0f1;
 }

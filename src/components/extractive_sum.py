@@ -6,7 +6,7 @@ We split the data on basis of label and perform extractive summarization on both
 
 from src.components.sentiment_analysis import Sentiment_Analysis
 from heapq import nlargest
-from src.utils import save_to_file
+from utils import save_to_file
 
 
 class Extractive_Sum():
@@ -49,7 +49,7 @@ class Extractive_Sum():
 
         # Save the combined sentences to a file
         saved_location =save_to_file(extractive_sentences,'C:\\Users\\vishn\\summarizer\\extracted_data' )
-
+    
         return saved_location
 
 
